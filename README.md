@@ -5,7 +5,7 @@ Chrome extension that adapts CVs and generates cover letters from job postings u
 ## Features
 
 - Extract job descriptions from LinkedIn, Wellfound, hh.ru
-- AI-powered CV adaptation to match role requirements  
+- AI-powered CV adaptation to match role requirements
 - Generate personalized cover letters
 - Local API key storage with secure management
 
@@ -21,8 +21,9 @@ pnpm dev
 ```
 
 **Load in Chrome:**
+
 1. Go to `chrome://extensions/`
-2. Enable "Developer mode" 
+2. Enable "Developer mode"
 3. "Load unpacked" → select `build/chrome-mv3-dev`
 
 ## Usage
@@ -36,16 +37,11 @@ pnpm dev
 ## Tech Stack
 
 - **Framework:** Plasmo
-- **UI:** React + TypeScript  
+- **UI:** React + TypeScript
 - **AI:** Claude API via LangChain
 - **Supported sites:** LinkedIn Jobs, Wellfound, hh.ru
 
 ## Build
-
-```bash
-pnpm build    # Production build
-pnpm package  # Create extension package
-```
 
 ## Privacy
 

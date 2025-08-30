@@ -9,7 +9,9 @@ const extractPageContent = (): string => {
   // Get the entire HTML content
   const htmlContent = document.documentElement.outerHTML
 
-  console.log("Clayface: Extracted HTML content", { length: htmlContent.length })
+  console.log("Clayface: Extracted HTML content", {
+    length: htmlContent.length
+  })
 
   return htmlContent
 }
@@ -27,7 +29,11 @@ const getPageInfo = () => {
     jobDescription: pageContent // Send the entire HTML content
   }
 
-  console.log("Clayface: Page info", { title, url, contentLength: pageContent.length })
+  console.log("Clayface: Page info", {
+    title,
+    url,
+    contentLength: pageContent.length
+  })
   return pageInfo
 }
 
@@ -36,7 +42,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log("Clayface: Message received", request)
   if (request.action === "getPageInfo") {
     const response = getPageInfo()
-    console.log("Clayface: Sending response", { contentLength: response.jobDescription.length })
+    console.log("Clayface: Sending response", {
+      contentLength: response.jobDescription.length
+    })
     sendResponse(response)
   }
 })

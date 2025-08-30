@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+
 import { getClaudeAPI, initializeClaudeAPI } from "./claude-api"
 
 interface PageInfo {
@@ -59,7 +60,10 @@ function IndexPopup() {
   useEffect(() => {
     const getCurrentTabInfo = async () => {
       try {
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
+        const [tab] = await chrome.tabs.query({
+          active: true,
+          currentWindow: true
+        })
 
         if (!tab.id) {
           setError("Could not get current tab")
@@ -71,7 +75,9 @@ function IndexPopup() {
 
         // Try to get page info from content script
         try {
-          const response = await chrome.tabs.sendMessage(tab.id, { action: "getPageInfo" })
+          const response = await chrome.tabs.sendMessage(tab.id, {
+            action: "getPageInfo"
+          })
           console.log("Received page info:", response)
           setPageInfo(response)
         } catch (err) {
@@ -119,15 +125,17 @@ function IndexPopup() {
     }
   }
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0]
     if (!file) return
 
     const allowedTypes = [
-      'application/pdf',
-      'text/plain',
-      'text/markdown',
-      'application/markdown'
+      "application/pdf",
+      "text/plain",
+      "text/markdown",
+      "application/markdown"
     ]
 
     if (!allowedTypes.includes(file.type)) {
@@ -135,7 +143,8 @@ function IndexPopup() {
       return
     }
 
-    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+    if (file.size > 5 * 1024 * 1024) {
+      // 5MB limit
       setError("File size must be less than 5MB")
       return
     }
@@ -146,10 +155,10 @@ function IndexPopup() {
     try {
       let textContent = ""
 
-      if (file.type === 'application/pdf') {
+      if (file.type === "application/pdf") {
         // For PDF files, convert to text
         const arrayBuffer = await file.arrayBuffer()
-        const pdfjsLib = await import('pdfjs-dist')
+        const pdfjsLib = await import("pdfjs-dist")
 
         // Load the PDF document
         const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer })
@@ -162,11 +171,11 @@ function IndexPopup() {
           const textContent = await page.getTextContent()
           const pageText = textContent.items
             .map((item: any) => item.str)
-            .join(' ')
+            .join(" ")
           textParts.push(pageText)
         }
 
-        textContent = textParts.join('\n\n')
+        textContent = textParts.join("\n\n")
       } else {
         // For text and markdown files
         textContent = await file.text()
@@ -255,8 +264,7 @@ function IndexPopup() {
             padding: "6px 12px",
             borderRadius: "4px",
             cursor: "pointer"
-          }}
-        >
+          }}>
           Try Again
         </button>
       </div>
@@ -265,9 +273,7 @@ function IndexPopup() {
 
   return (
     <div style={{ padding: 16, width: 300 }}>
-      <h2 style={{ margin: "0 0 16px 0", fontSize: "18px" }}>
-        Clayface
-      </h2>
+      <h2 style={{ margin: "0 0 16px 0", fontSize: "18px" }}>Clayface</h2>
 
       {showApiKeyInput && (
         <div style={{ marginBottom: "16px" }}>
@@ -298,8 +304,7 @@ function IndexPopup() {
                 borderRadius: "4px",
                 cursor: "pointer",
                 flex: 1
-              }}
-            >
+              }}>
               Set API Key
             </button>
             <button
@@ -314,8 +319,7 @@ function IndexPopup() {
                 padding: "6px 12px",
                 borderRadius: "4px",
                 cursor: "pointer"
-              }}
-            >
+              }}>
               Cancel
             </button>
           </div>
@@ -324,14 +328,16 @@ function IndexPopup() {
 
       {pageInfo?.isJobSite ? (
         <div>
-          <div style={{
-            background: "#e8f5e8",
-            padding: "8px 12px",
-            borderRadius: "4px",
-            marginBottom: "12px",
-            border: "1px solid #4caf50"
-          }}>
-            ✅ Page content captured ({Math.round(pageInfo.jobDescription.length / 1024)}KB)
+          <div
+            style={{
+              background: "#e8f5e8",
+              padding: "8px 12px",
+              borderRadius: "4px",
+              marginBottom: "12px",
+              border: "1px solid #4caf50"
+            }}>
+            ✅ Page content captured (
+            {Math.round(pageInfo.jobDescription.length / 1024)}KB)
           </div>
 
           <div style={{ fontSize: "14px", marginBottom: "12px" }}>
@@ -340,13 +346,14 @@ function IndexPopup() {
 
           {!apiKeySet && !showApiKeyInput && (
             <div style={{ marginBottom: "12px" }}>
-              <div style={{
-                background: "#fff3cd",
-                padding: "8px 12px",
-                borderRadius: "4px",
-                marginBottom: "8px",
-                border: "1px solid #ffc107"
-              }}>
+              <div
+                style={{
+                  background: "#fff3cd",
+                  padding: "8px 12px",
+                  borderRadius: "4px",
+                  marginBottom: "8px",
+                  border: "1px solid #ffc107"
+                }}>
                 ⚠️ Claude API key required
               </div>
               <button
@@ -359,8 +366,7 @@ function IndexPopup() {
                   borderRadius: "4px",
                   cursor: "pointer",
                   width: "100%"
-                }}
-              >
+                }}>
                 Set API Key
               </button>
             </div>
@@ -368,13 +374,14 @@ function IndexPopup() {
 
           {apiKeySet && !showApiKeyInput && (
             <div style={{ marginBottom: "12px" }}>
-              <div style={{
-                background: "#e8f5e8",
-                padding: "8px 12px",
-                borderRadius: "4px",
-                marginBottom: "8px",
-                border: "1px solid #4caf50"
-              }}>
+              <div
+                style={{
+                  background: "#e8f5e8",
+                  padding: "8px 12px",
+                  borderRadius: "4px",
+                  marginBottom: "8px",
+                  border: "1px solid #4caf50"
+                }}>
                 ✅ API Key Saved
               </div>
               <button
@@ -391,8 +398,7 @@ function IndexPopup() {
                   borderRadius: "4px",
                   cursor: "pointer",
                   fontSize: "12px"
-                }}
-              >
+                }}>
                 Clear API Key
               </button>
             </div>
@@ -403,14 +409,15 @@ function IndexPopup() {
               <div style={{ fontSize: "14px", marginBottom: "8px" }}>
                 <strong>Upload your CV:</strong>
               </div>
-              <div style={{
-                border: "2px dashed #ddd",
-                borderRadius: "4px",
-                padding: "20px",
-                textAlign: "center",
-                marginBottom: "8px",
-                background: "#f9f9f9"
-              }}>
+              <div
+                style={{
+                  border: "2px dashed #ddd",
+                  borderRadius: "4px",
+                  padding: "20px",
+                  textAlign: "center",
+                  marginBottom: "8px",
+                  background: "#f9f9f9"
+                }}>
                 <input
                   type="file"
                   accept=".pdf,.txt,.md,.markdown"
@@ -425,11 +432,13 @@ function IndexPopup() {
                     cursor: uploading ? "not-allowed" : "pointer",
                     color: uploading ? "#999" : "#1976d2",
                     fontSize: "14px"
-                  }}
-                >
-                  {uploading ? "Uploading..." : "📁 Click to upload PDF, TXT, or MD file"}
+                  }}>
+                  {uploading
+                    ? "Uploading..."
+                    : "📁 Click to upload PDF, TXT, or MD file"}
                 </label>
-                <div style={{ fontSize: "12px", color: "#666", marginTop: "8px" }}>
+                <div
+                  style={{ fontSize: "12px", color: "#666", marginTop: "8px" }}>
                   Max 5MB • PDF, TXT, MD files only
                 </div>
               </div>
@@ -443,8 +452,7 @@ function IndexPopup() {
                   borderRadius: "4px",
                   cursor: "pointer",
                   width: "100%"
-                }}
-              >
+                }}>
                 Cancel
               </button>
             </div>
@@ -452,14 +460,17 @@ function IndexPopup() {
 
           {!showCvInput && apiKeySet && (
             <div style={{ marginBottom: "12px" }}>
-              <div style={{
-                background: cvContent ? "#e8f5e8" : "#fff3cd",
-                padding: "8px 12px",
-                borderRadius: "4px",
-                marginBottom: "8px",
-                border: cvContent ? "1px solid #4caf50" : "1px solid #ffc107"
-              }}>
-                {cvContent ? `✅ CV Ready (${cvFileName})` : "📄 No CV uploaded"}
+              <div
+                style={{
+                  background: cvContent ? "#e8f5e8" : "#fff3cd",
+                  padding: "8px 12px",
+                  borderRadius: "4px",
+                  marginBottom: "8px",
+                  border: cvContent ? "1px solid #4caf50" : "1px solid #ffc107"
+                }}>
+                {cvContent
+                  ? `✅ CV Ready (${cvFileName})`
+                  : "📄 No CV uploaded"}
               </div>
               <button
                 onClick={() => setShowCvInput(true)}
@@ -472,8 +483,7 @@ function IndexPopup() {
                   cursor: "pointer",
                   fontSize: "12px",
                   marginRight: "8px"
-                }}
-              >
+                }}>
                 {cvContent ? "Change CV" : "Upload CV"}
               </button>
               {cvContent && (
@@ -490,8 +500,7 @@ function IndexPopup() {
                     borderRadius: "4px",
                     cursor: "pointer",
                     fontSize: "12px"
-                  }}
-                >
+                  }}>
                   Remove CV
                 </button>
               )}
@@ -510,54 +519,73 @@ function IndexPopup() {
                 width: "100%"
               }}
               onClick={handleAdaptCV}
-              disabled={adapting}
-            >
-              {adapting ? "Adapting CV..." : cvContent ? "Adapt My CV to This Job" : "Generate CV Template"}
+              disabled={adapting}>
+              {adapting
+                ? "Adapting CV..."
+                : cvContent
+                  ? "Adapt My CV to This Job"
+                  : "Generate CV Template"}
             </button>
           )}
 
           {result && (
             <div style={{ marginTop: "12px" }}>
-              <div style={{
-                background: "#e3f2fd",
-                padding: "8px 12px",
-                borderRadius: "4px",
-                marginBottom: "12px",
-                border: "1px solid #2196f3"
-              }}>
-                ✅ {cvContent ? "CV Adapted Successfully" : "CV Template Generated"}
+              <div
+                style={{
+                  background: "#e3f2fd",
+                  padding: "8px 12px",
+                  borderRadius: "4px",
+                  marginBottom: "12px",
+                  border: "1px solid #2196f3"
+                }}>
+                ✅{" "}
+                {cvContent
+                  ? "CV Adapted Successfully"
+                  : "CV Template Generated"}
               </div>
 
               <div style={{ marginBottom: "12px" }}>
-                <div style={{ fontSize: "12px", color: "#666", marginBottom: "4px" }}>
+                <div
+                  style={{
+                    fontSize: "12px",
+                    color: "#666",
+                    marginBottom: "4px"
+                  }}>
                   <strong>{cvContent ? "Adapted CV:" : "CV Template:"}</strong>
                 </div>
-                <div style={{
-                  fontSize: "12px",
-                  background: "#f5f5f5",
-                  padding: "8px",
-                  borderRadius: "4px",
-                  maxHeight: "100px",
-                  overflow: "auto",
-                  border: "1px solid #ddd"
-                }}>
+                <div
+                  style={{
+                    fontSize: "12px",
+                    background: "#f5f5f5",
+                    padding: "8px",
+                    borderRadius: "4px",
+                    maxHeight: "100px",
+                    overflow: "auto",
+                    border: "1px solid #ddd"
+                  }}>
                   {result.adaptedCV}
                 </div>
               </div>
 
               <div style={{ marginBottom: "12px" }}>
-                <div style={{ fontSize: "12px", color: "#666", marginBottom: "4px" }}>
+                <div
+                  style={{
+                    fontSize: "12px",
+                    color: "#666",
+                    marginBottom: "4px"
+                  }}>
                   <strong>Cover Letter:</strong>
                 </div>
-                <div style={{
-                  fontSize: "12px",
-                  background: "#f5f5f5",
-                  padding: "8px",
-                  borderRadius: "4px",
-                  maxHeight: "100px",
-                  overflow: "auto",
-                  border: "1px solid #ddd"
-                }}>
+                <div
+                  style={{
+                    fontSize: "12px",
+                    background: "#f5f5f5",
+                    padding: "8px",
+                    borderRadius: "4px",
+                    maxHeight: "100px",
+                    overflow: "auto",
+                    border: "1px solid #ddd"
+                  }}>
                   {result.coverLetter}
                 </div>
               </div>
@@ -574,8 +602,7 @@ function IndexPopup() {
                 }}
                 onClick={() => {
                   navigator.clipboard.writeText(result.adaptedCV)
-                }}
-              >
+                }}>
                 Copy CV
               </button>
 
@@ -590,7 +617,9 @@ function IndexPopup() {
                   marginRight: "8px"
                 }}
                 onClick={() => {
-                  const blob = new Blob([result.adaptedCV], { type: "text/markdown" })
+                  const blob = new Blob([result.adaptedCV], {
+                    type: "text/markdown"
+                  })
                   const url = URL.createObjectURL(blob)
                   const a = document.createElement("a")
                   a.href = url
@@ -599,8 +628,7 @@ function IndexPopup() {
                   a.click()
                   document.body.removeChild(a)
                   URL.revokeObjectURL(url)
-                }}
-              >
+                }}>
                 Download CV
               </button>
 
@@ -616,8 +644,7 @@ function IndexPopup() {
                 }}
                 onClick={() => {
                   navigator.clipboard.writeText(result.coverLetter)
-                }}
-              >
+                }}>
                 Copy Cover Letter
               </button>
 
@@ -631,7 +658,9 @@ function IndexPopup() {
                   cursor: "pointer"
                 }}
                 onClick={() => {
-                  const blob = new Blob([result.coverLetter], { type: "text/plain" })
+                  const blob = new Blob([result.coverLetter], {
+                    type: "text/plain"
+                  })
                   const url = URL.createObjectURL(blob)
                   const a = document.createElement("a")
                   a.href = url
@@ -640,8 +669,7 @@ function IndexPopup() {
                   a.click()
                   document.body.removeChild(a)
                   URL.revokeObjectURL(url)
-                }}
-              >
+                }}>
                 Download Cover Letter
               </button>
             </div>
@@ -649,13 +677,14 @@ function IndexPopup() {
         </div>
       ) : (
         <div>
-          <div style={{
-            background: "#fff3cd",
-            padding: "8px 12px",
-            borderRadius: "4px",
-            marginBottom: "12px",
-            border: "1px solid #ffc107"
-          }}>
+          <div
+            style={{
+              background: "#fff3cd",
+              padding: "8px 12px",
+              borderRadius: "4px",
+              marginBottom: "12px",
+              border: "1px solid #ffc107"
+            }}>
             ⚠️ No page content available
           </div>
           <div style={{ fontSize: "14px", color: "#666" }}>
