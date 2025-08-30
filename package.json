@@ -10,6 +10,10 @@
     "package": "plasmo package"
   },
   "dependencies": {
+    "@langchain/anthropic": "^0.3.26",
+    "@langchain/core": "^0.3.72",
+    "pdf-parse": "^1.1.1",
+    "pdfjs-dist": "^5.4.149",
     "plasmo": "0.90.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"
@@ -26,6 +30,9 @@
   "manifest": {
     "host_permissions": [
       "https://*/*"
+    ],
+    "permissions": [
+      "storage"
     ]
   }
 }

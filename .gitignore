@@ -26,6 +26,8 @@ out/
 build/
 dist/
 
+.cursor
+
 # plasmo
 .plasmo
 
