@@ -1,0 +1,2 @@
+import "~/contents/content";
+

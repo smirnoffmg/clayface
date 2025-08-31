@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-import { getClaudeAPI, initializeClaudeAPI } from "./claude-api"
+import { getClaudeAPISimple, initializeClaudeAPISimple } from "~/services/api/claude-api-simple"
 
 interface PageInfo {
   title: string
@@ -38,7 +38,7 @@ function IndexPopup() {
           setApiKey(result.claudeApiKey)
           // Try to initialize with saved key
           try {
-            initializeClaudeAPI(result.claudeApiKey)
+            initializeClaudeAPISimple(result.claudeApiKey)
             setApiKeySet(true)
             console.log("API initialized with saved key")
           } catch (err) {
@@ -110,7 +110,7 @@ function IndexPopup() {
 
     try {
       console.log("Setting API key...")
-      initializeClaudeAPI(apiKey.trim())
+      initializeClaudeAPISimple(apiKey.trim())
 
       // Save to Chrome storage
       await chrome.storage.local.set({ claudeApiKey: apiKey.trim() })
@@ -215,7 +215,7 @@ function IndexPopup() {
 
     try {
       console.log("Starting CV adaptation process...")
-      const claudeAPI = getClaudeAPI()
+      const claudeAPI = getClaudeAPISimple()
       if (!claudeAPI) {
         setError("API not initialized")
         return
